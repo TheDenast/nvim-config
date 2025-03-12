@@ -10,33 +10,9 @@
   <leader><tab> - Tab operations
 --]]
 
--- Near the top of your keymaps.lua:
-local wk_ok, wk = pcall(require, "which-key")
-if wk_ok then
-  wk.register({
-    ["<leader>"] = {
-      s = { name = "[S]earch" },
-      c = { name = "[C]ode" },
-      b = { name = "[B]uffer" },
-      w = { name = "[W]indow" },
-      f = { name = "[F]ile" },
-      g = { name = "[G]it" },
-      u = { name = "[U]I Toggle" },
-      x = { name = "Lists" },
-      ["<tab>"] = { name = "Tabs" },
-    }
-  })
-end
-
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 local map = vim.keymap.set
-
--- [[ Basic Keymaps ]]
--- Set <space> as the leader key
--- See `:help mapleader`
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -434,48 +410,6 @@ map({ 'i', 's' }, '<S-Tab>', function()
   end
 end, { expr = true, desc = 'Jump Previous' })
 
--- [[ Search Operations (Telescope) ]]
--- Add this section after your basic keymaps and before other specialized sections
-
--- Load telescope builtin functions
-local telescope_ok, builtin = pcall(require, 'telescope.builtin')
-if telescope_ok then
-  -- Basic telescope keymaps
-  map('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-  map('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-  map('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-  map('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-  map('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-  map('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-  map('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-  map('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-  map('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-  map('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
-  -- Fuzzy search in current buffer
-  map('n', '<leader>/', function()
-    builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-      winblend = 10,
-      previewer = false,
-    })
-  end, { desc = '[/] Fuzzily search in current buffer' })
-
-  -- Search in open files
-  map('n', '<leader>s/', function()
-    builtin.live_grep {
-      grep_open_files = true,
-      prompt_title = 'Live Grep in Open Files',
-    }
-  end, { desc = '[S]earch [/] in Open Files' })
-
-  -- Search neovim config files
-  map('n', '<leader>sn', function()
-    builtin.find_files { cwd = vim.fn.stdpath 'config' }
-  end, { desc = '[S]earch [N]eovim files' })
-  
-  -- LSP-related telescope keymaps (only active when LSP is attached)
-  -- These will be set up in your LSP configuration
-end
 
 -- Return the module
 return {}

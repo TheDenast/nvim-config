@@ -61,5 +61,31 @@ return {
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
-  }
+  },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    version = '*',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+    },
+    cmd = 'Neotree',
+    keys = {
+      { '<leader>e', ':Neotree reveal<CR>', desc = 'File Explorer (Neo-tree)', silent = true },
+    },
+    opts = {
+      window = {
+        width = 30, -- Default width
+        auto_expand_width = true, -- Will expand past width when needed
+      },
+      filesystem = {
+        window = {
+          mappings = {
+            ['<leader>e'] = 'close_window',
+          },
+        },
+      },
+    },
+  },
 }

@@ -31,6 +31,40 @@ return {
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
+    keys = {
+      -- Basic telescope keymaps
+      { '<leader>sh', function() require('telescope.builtin').help_tags() end, desc = '[H]elp' },
+      { '<leader>sk', function() require('telescope.builtin').keymaps() end, desc = '[K]eymaps' },
+      { '<leader>sf', function() require('telescope.builtin').find_files() end, desc = '[F]iles' },
+      { '<leader>ss', function() require('telescope.builtin').builtin() end, desc = '[S]elect Telescope' },
+      { '<leader>sw', function() require('telescope.builtin').grep_string() end, desc = '[W]ord' },
+      { '<leader>sg', function() require('telescope.builtin').live_grep() end, desc = '[G]rep' },
+      { '<leader>sd', function() require('telescope.builtin').diagnostics() end, desc = '[D]iagnostics' },
+      { '<leader>sr', function() require('telescope.builtin').resume() end, desc = '[R]esume' },
+      { '<leader>s.', function() require('telescope.builtin').oldfiles() end, desc = 'Recent Files ("." for repeat)' },
+      { '<leader><leader>', function() require('telescope.builtin').buffers() end, desc = '[ ] Find existing buffers' },
+      
+      -- Fuzzy search in current buffer
+      { '<leader>/', function()
+        require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+          winblend = 10,
+          previewer = false,
+        })
+      end, desc = '[/] Fuzzily search in current buffer' },
+      
+      -- Search in open files
+      { '<leader>s/', function()
+        require('telescope.builtin').live_grep {
+          grep_open_files = true,
+          prompt_title = 'Live Grep in Open Files',
+        }
+      end, desc = '[S]earch [/] in Open Files' },
+      
+      -- Search neovim config files
+      { '<leader>sn', function()
+        require('telescope.builtin').find_files { cwd = vim.fn.stdpath 'config' }
+      end, desc = '[S]earch [N]eovim files' },
+    },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
       -- it can fuzzy find! It's more than just a "file finder", it can search
