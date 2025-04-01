@@ -2,31 +2,11 @@
 return {
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
-  
+
   -- Git integration
   {
     'lewis6991/gitsigns.nvim',
-    keys = {
-      { '<leader>gb', function() require('gitsigns').blame_line() end, desc = 'Git Blame Line' },
-      { '<leader>gB', function()
-          local ok, gitlinker = pcall(require, 'gitlinker')
-          if ok then
-            gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser })
-          else
-            vim.notify('Gitlinker not available', vim.log.levels.WARN)
-          end
-        end, mode = { 'n', 'x' }, desc = 'Git Browse (open)' 
-      },
-      { '<leader>gY', function()
-          local ok, gitlinker = pcall(require, 'gitlinker')
-          if ok then
-            gitlinker.get_buf_range_url('n')
-          else
-            vim.notify('Gitlinker not available', vim.log.levels.WARN)
-          end
-        end, mode = { 'n', 'x' }, desc = 'Git Browse (copy)' 
-      },
-    },
+    event = { "BufReadPost", "BufWritePost", "BufNewfile" },
     opts = {
       signs = {
         add = { text = '+' },
@@ -34,6 +14,35 @@ return {
         delete = { text = '_' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
+      },
+    },
+    keys = {
+      { '<leader>gb', function() require('gitsigns').blame_line() end, desc = 'Git Blame Line' },
+      {
+        '<leader>gB',
+        function()
+          local ok, gitlinker = pcall(require, 'gitlinker')
+          if ok then
+            gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser })
+          else
+            vim.notify('Gitlinker not available', vim.log.levels.WARN)
+          end
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Git Browse (open)'
+      },
+      {
+        '<leader>gY',
+        function()
+          local ok, gitlinker = pcall(require, 'gitlinker')
+          if ok then
+            gitlinker.get_buf_range_url('n')
+          else
+            vim.notify('Gitlinker not available', vim.log.levels.WARN)
+          end
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Git Browse (copy)'
       },
     },
   },
@@ -121,7 +130,9 @@ return {
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     keys = {
-      { '<leader>uT', function()
+      {
+        '<leader>uT',
+        function()
           if vim.b.ts_highlight then
             vim.treesitter.stop()
             vim.notify('Treesitter highlight disabled')
@@ -130,7 +141,8 @@ return {
             vim.notify('Treesitter highlight enabled')
           end
           vim.b.ts_highlight = not vim.b.ts_highlight
-        end, desc = 'Toggle Treesitter Highlight' 
+        end,
+        desc = 'Toggle Treesitter Highlight'
       },
     },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
