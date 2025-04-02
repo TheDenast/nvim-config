@@ -38,12 +38,20 @@ return {
       -- - settings (table): Override the default settings passed when initializing the server.
       local servers = {
         -- Example server configurations:
-        -- pyright = {}, -- Python
-        -- ruff_lsp = {}, -- Python linter
-        -- rust_analyzer = {}, -- Rust
-        -- tsserver = {}, -- TypeScript/JavaScript
-        -- gopls = {}, -- Go
-
+        basedpyright = {
+          settings = {
+            python = {
+              analysis = {
+                typeCheckingMode = "basic", -- or "strict" for stricter checks
+                diagnosticMode = "workspace",
+              },
+            },
+          },
+        },
+        ruff = {
+          -- Ruff will use your project's configuration (pyproject.toml, ruff.toml, etc.)
+          -- by default, so often no additional settings are needed
+        },
         lua_ls = {
           settings = {
             Lua = {
@@ -55,6 +63,8 @@ return {
             },
           },
         },
+        -- Add the Nix LSP configuration
+        nil_ls = {},
       }
 
       -- Setup each LSP server
@@ -245,8 +255,8 @@ return {
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        nix = { 'nixfmt' },
+        python = { 'ruff_format' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
