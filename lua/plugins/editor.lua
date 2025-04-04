@@ -1,48 +1,54 @@
 -- Editor enhancement plugins
 return {
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  "tpope/vim-sleuth",
 
   -- Git integration
   {
-    'lewis6991/gitsigns.nvim',
+    "lewis6991/gitsigns.nvim",
     event = { "BufReadPost", "BufWritePost", "BufNewfile" },
     opts = {
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
+        add = { text = "+" },
+        change = { text = "~" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
       },
     },
     keys = {
-      { '<leader>gb', function() require('gitsigns').blame_line() end, desc = 'Git Blame Line' },
       {
-        '<leader>gB',
+        "<leader>gb",
         function()
-          local ok, gitlinker = pcall(require, 'gitlinker')
-          if ok then
-            gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser })
-          else
-            vim.notify('Gitlinker not available', vim.log.levels.WARN)
-          end
+          require("gitsigns").blame_line()
         end,
-        mode = { 'n', 'x' },
-        desc = 'Git Browse (open)'
+        desc = "Git Blame Line",
       },
       {
-        '<leader>gY',
+        "<leader>gB",
         function()
-          local ok, gitlinker = pcall(require, 'gitlinker')
+          local ok, gitlinker = pcall(require, "gitlinker")
           if ok then
-            gitlinker.get_buf_range_url('n')
+            gitlinker.get_buf_range_url("n", { action_callback = gitlinker.actions.open_in_browser })
           else
-            vim.notify('Gitlinker not available', vim.log.levels.WARN)
+            vim.notify("Gitlinker not available", vim.log.levels.WARN)
           end
         end,
-        mode = { 'n', 'x' },
-        desc = 'Git Browse (copy)'
+        mode = { "n", "x" },
+        desc = "Git Browse (open)",
+      },
+      {
+        "<leader>gY",
+        function()
+          local ok, gitlinker = pcall(require, "gitlinker")
+          if ok then
+            gitlinker.get_buf_range_url("n")
+          else
+            vim.notify("Gitlinker not available", vim.log.levels.WARN)
+          end
+        end,
+        mode = { "n", "x" },
+        desc = "Git Browse (copy)",
       },
     },
   },
@@ -126,28 +132,40 @@ return {
     end,
   },
   { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    main = "nvim-treesitter.configs", -- Sets main module to use for opts
     keys = {
       {
-        '<leader>uT',
+        "<leader>uT",
         function()
           if vim.b.ts_highlight then
             vim.treesitter.stop()
-            vim.notify('Treesitter highlight disabled')
+            vim.notify("Treesitter highlight disabled")
           else
             vim.treesitter.start()
-            vim.notify('Treesitter highlight enabled')
+            vim.notify("Treesitter highlight enabled")
           end
           vim.b.ts_highlight = not vim.b.ts_highlight
         end,
-        desc = 'Toggle Treesitter Highlight'
+        desc = "Toggle Treesitter Highlight",
       },
     },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        "bash",
+        "c",
+        "diff",
+        "html",
+        "lua",
+        "luadoc",
+        "markdown",
+        "markdown_inline",
+        "query",
+        "vim",
+        "vimdoc",
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -155,9 +173,9 @@ return {
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { "ruby" },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { "ruby" } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -165,5 +183,5 @@ return {
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-  }
+  },
 }
