@@ -73,7 +73,32 @@ map("n", "<leader>bb", "<cmd>e #<CR>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>`", "<cmd>e #<CR>", { desc = "Switch to Other Buffer" })
 
 -- Buffer management
-map("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete Buffer" })
+map("n", "<leader>bd", function()
+  -- Get the current buffer number
+  local current_buf = vim.api.nvim_get_current_buf()
+  
+  -- Get a list of all buffers
+  local buffers = vim.api.nvim_list_bufs()
+  
+  -- Filter out non-loaded and non-listed buffers
+  local valid_buffers = vim.tbl_filter(function(buf)
+    return vim.api.nvim_buf_is_valid(buf) 
+      and vim.bo[buf].buflisted
+      and buf ~= current_buf
+  end, buffers)
+  
+  if #valid_buffers > 0 then
+    -- Switch to the next buffer before deleting the current one
+    vim.cmd("b" .. valid_buffers[1])
+    -- Delete the previous buffer
+    vim.cmd("bd" .. current_buf)
+  else
+    -- If no other buffers exist, create a new one before deleting
+    vim.cmd("enew")
+    vim.cmd("bd" .. current_buf)
+  end
+end, { desc = "Delete Buffer" })
+
 map("n", "<leader>bo", "<cmd>%bd|e#|bd#<CR>", { desc = "Delete Other Buffers" })
 map("n", "<leader>bD", "<cmd>bd!<CR>", { desc = "Delete Buffer and Window" })
 
