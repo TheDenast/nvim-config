@@ -41,6 +41,13 @@ return {
         desc = "[H]elp",
       },
       {
+        "<leader>st",
+        function()
+          require("telescope.builtin").builtin()
+        end,
+        desc = "[T]elescope",
+      },
+      {
         "<leader>sk",
         function()
           require("telescope.builtin").keymaps()
@@ -57,9 +64,19 @@ return {
       {
         "<leader>ss",
         function()
-          require("telescope.builtin").builtin()
+          require("telescope.builtin").lsp_document_symbols({
+            symbols = {
+              "function",
+              "method",
+              "class",
+              "interface",
+              "struct",
+            },
+            show_line = true,
+            symbol_type = true,
+          })
         end,
-        desc = "[S]elect Telescope",
+        desc = "[S]ymbols",
       },
       {
         "<leader>sw",
@@ -160,15 +177,20 @@ return {
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require("telescope").setup({
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          mappings = {
+            i = {
+              ["<C-j>"] = "move_selection_next",
+              ["<C-k>"] = "move_selection_previous",
+              ["<C-l>"] = "select_default",
+            },
+            n = {
+              ["<C-j>"] = "move_selection_next",
+              ["<C-k>"] = "move_selection_previous",
+              ["<C-l>"] = "select_default",
+            },
+          },
+        },
         extensions = {
           ["ui-select"] = {
             require("telescope.themes").get_dropdown(),

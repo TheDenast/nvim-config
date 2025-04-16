@@ -42,8 +42,10 @@ return {
           settings = {
             python = {
               analysis = {
-                typeCheckingMode = "basic", -- or "strict" for stricter checks
-                diagnosticMode = "workspace",
+                autoSearchPaths = true,
+                diagnosticMode = "openFilesOnly",
+                useLibraryCodeForTypes = false,
+                typeCheckingMode = "none",
               },
             },
           },

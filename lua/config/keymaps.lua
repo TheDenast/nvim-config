@@ -179,8 +179,13 @@ map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 map("n", "<leader>cy", function()
   local diagnostics = vim.diagnostic.get(0, { lnum = vim.api.nvim_win_get_cursor(0)[1] - 1 })
   if #diagnostics > 0 then
-    vim.fn.setreg("+", diagnostics[1].message)
-    vim.notify("Diagnostic copied to clipboard", vim.log.levels.INFO)
+    local messages = {}
+    for _, diag in ipairs(diagnostics) do
+      table.insert(messages, (diag.source or "nvim") .. ": " .. diag.message)
+    end
+    local combined_message = table.concat(messages, "\n")
+    vim.fn.setreg("+", combined_message)
+    vim.notify("Diagnostics copied to clipboard", vim.log.levels.INFO)
   end
 end, { desc = "Copy Diagnostic Message" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next Diagnostic" })
