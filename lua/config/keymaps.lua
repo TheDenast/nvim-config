@@ -72,21 +72,28 @@ map("n", "]b", "<cmd>bnext<CR>", { desc = "Next Buffer" })
 map("n", "<leader>bb", "<cmd>e #<CR>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>`", "<cmd>e #<CR>", { desc = "Switch to Other Buffer" })
 
+-- Buffer reordering
+map("n", "<C-A-h>", function()
+  require("bufferline").move(-1)
+end, { desc = "Move Buffer Left" })
+
+map("n", "<C-A-l>", function()
+  require("bufferline").move(1)
+end, { desc = "Move Buffer Right" })
+
 -- Buffer management
 map("n", "<leader>bd", function()
   -- Get the current buffer number
   local current_buf = vim.api.nvim_get_current_buf()
-  
+
   -- Get a list of all buffers
   local buffers = vim.api.nvim_list_bufs()
-  
+
   -- Filter out non-loaded and non-listed buffers
   local valid_buffers = vim.tbl_filter(function(buf)
-    return vim.api.nvim_buf_is_valid(buf) 
-      and vim.bo[buf].buflisted
-      and buf ~= current_buf
+    return vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted and buf ~= current_buf
   end, buffers)
-  
+
   if #valid_buffers > 0 then
     -- Switch to the next buffer before deleting the current one
     vim.cmd("b" .. valid_buffers[1])
@@ -163,7 +170,6 @@ map("n", "[q", "<cmd>cprevious<CR>", { desc = "Previous Quickfix" })
 map("n", "]q", "<cmd>cnext<CR>", { desc = "Next Quickfix" })
 
 -- Formatting
--- NOTE: This may conflict with your existing <leader>f mapping for telescope
 map({ "n", "v" }, "<leader>cf", function()
   -- Check if conform.nvim is available
   local ok, conform = pcall(require, "conform")
@@ -446,4 +452,3 @@ end, { expr = true, desc = "Jump Previous" })
 
 -- Return the module
 return {}
-

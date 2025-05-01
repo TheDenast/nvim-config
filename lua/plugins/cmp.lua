@@ -65,14 +65,15 @@ return {
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
 
+          -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          
+          -- Insert new line without accepting completion
           ["<C-CR>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.confirm({ select = true })
-              fallback()
-            else
-              fallback()
+              cmp.abort()
             end
+            fallback()
           end),
 
           -- If you prefer more traditional completion keymaps,
