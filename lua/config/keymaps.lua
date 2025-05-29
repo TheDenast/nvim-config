@@ -281,16 +281,6 @@ map("n", "<leader>uT", function()
   vim.b.ts_highlight = not vim.b.ts_highlight
 end, { desc = "Toggle Treesitter Highlight" })
 
--- Background
-map("n", "<leader>ub", function()
-  if vim.opt.background:get() == "dark" then
-    vim.opt.background = "light"
-  else
-    vim.opt.background = "dark"
-  end
-  vim.notify("Background: " .. vim.opt.background:get())
-end, { desc = "Toggle Dark Background" })
-
 -- Git commands (requires a git plugin like gitsigns.nvim)
 map("n", "<leader>gb", function()
   -- Check if gitsigns is available

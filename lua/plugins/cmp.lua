@@ -1,5 +1,20 @@
 -- Autocompletion
 return {
+  -- Crates plugin for better Rust dependency management
+  {
+    "saecki/crates.nvim",
+    event = { "BufRead Cargo.toml" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      popup = {
+        border = "rounded",
+      },
+      null_ls = {
+        enabled = true,
+        name = "crates",
+      },
+    },
+  },
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
@@ -36,6 +51,8 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lsp-signature-help",
+      -- Add crates source for Rust Cargo.toml files
+      "saecki/crates.nvim",
     },
     config = function()
       -- See `:help cmp`
@@ -118,8 +135,16 @@ return {
           { name = "nvim_lsp" },
           { name = "luasnip" },
           { name = "path" },
+          { name = "crates" },
           { name = "nvim_lsp_signature_help" },
         },
+        -- Set up filetype-specific sources
+        cmp.setup.filetype("toml", {
+          sources = cmp.config.sources({
+            { name = "crates" },
+            { name = "path" },
+          }),
+        }),
       })
     end,
   },

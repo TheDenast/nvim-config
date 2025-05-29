@@ -26,8 +26,24 @@ return {
   {
     "folke/todo-comments.nvim",
     event = "VimEnter",
+    cmd = { "TodoTrouble", "TodoTelescope" },
     dependencies = { "nvim-lua/plenary.nvim" },
-    opts = { signs = false },
+    opts = {
+      signs = false,
+      keywords = {
+        FIX = {
+          icon = " ", -- icon used for the sign, and in search results
+          color = "error", -- can be a hex color, or a named color (see below)
+          alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
+        },
+        TODO = { icon = " ", color = "info" },
+        HACK = { icon = " ", color = "warning" },
+        WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+        PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+        NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+        TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+      },
+    },
   },
 
   { -- Collection of various small independent plugins/modules
@@ -322,6 +338,16 @@ return {
     -- order to load the plugin when the command is run for the first time
     keys = {
       { "<leader>gg", "<cmd>LazyGit<cr>", desc = "lazy[G]it" },
+    },
+  },
+  {
+    "FabijanZulj/blame.nvim",
+    lazy = false,
+    config = function()
+      require("blame").setup({})
+    end,
+    keys = {
+      { "<leader>ub", "<cmd>BlameToggle virtual<cr>", desc = "Toggle git blame view" },
     },
   },
 }

@@ -55,6 +55,11 @@ return {
         desc = "[K]eymaps",
       },
       {
+        "<leader>sx",
+        "<cmd>TodoTelescope<cr>",
+        desc = "Search Todo Comments",
+      },
+      {
         "<leader>sf",
         function()
           require("telescope.builtin").find_files()
@@ -201,6 +206,7 @@ return {
       -- Enable Telescope extensions if they are installed
       pcall(require("telescope").load_extension, "fzf")
       pcall(require("telescope").load_extension, "ui-select")
+      pcall(require("telescope").load_extension, "todo")
     end,
   },
 }

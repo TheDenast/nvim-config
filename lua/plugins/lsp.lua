@@ -67,6 +67,27 @@ return {
         },
         -- Add the Nix LSP configuration
         nil_ls = {},
+        
+        -- Add Rust analyzer configuration
+        rust_analyzer = {
+          settings = {
+            ['rust-analyzer'] = {
+              checkOnSave = {
+                command = "clippy",
+                extraArgs = {"--all-features", "--no-deps"}
+              },
+              procMacro = {
+                enable = true
+              },
+              inlayHints = {
+                bindingModeHints = { enable = true },
+                closureReturnTypeHints = { enable = "always" },
+                expressionAdjustmentHints = { enable = "always" },
+                lifetimeElisionHints = { enable = "always", useParameterNames = true },
+              },
+            }
+          }
+        },
       }
 
       -- Setup each LSP server
@@ -262,6 +283,7 @@ return {
         lua = { "stylua" },
         nix = { "nixfmt" },
         python = { "ruff_format" },
+        rust = { "rustfmt" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
