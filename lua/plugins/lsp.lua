@@ -67,17 +67,17 @@ return {
         },
         -- Add the Nix LSP configuration
         nil_ls = {},
-        
+
         -- Add Rust analyzer configuration
         rust_analyzer = {
           settings = {
-            ['rust-analyzer'] = {
+            ["rust-analyzer"] = {
               checkOnSave = {
                 command = "clippy",
-                extraArgs = {"--all-features", "--no-deps"}
+                extraArgs = { "--all-features", "--no-deps" },
               },
               procMacro = {
-                enable = true
+                enable = true,
               },
               inlayHints = {
                 bindingModeHints = { enable = true },
@@ -85,16 +85,95 @@ return {
                 expressionAdjustmentHints = { enable = "always" },
                 lifetimeElisionHints = { enable = "always", useParameterNames = true },
               },
-            }
-          }
+            },
+          },
         },
+
+        -- TypeScript/JavaScript support
+        ts_ls = {
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        },
+
+        -- ESLint for JavaScript/TypeScript linting
+        eslint = {
+          settings = {
+            workingDirectories = { mode = "auto" },
+          },
+        },
+
+        -- Docker language server
+        dockerls = {},
+
+        -- Docker Compose language server
+        docker_compose_language_service = {},
+
+        -- JSON language server (useful for package.json, tsconfig.json, etc.)
+        jsonls = {
+          settings = {
+            json = {
+              validate = { enable = true },
+              format = { enable = true },
+            },
+          },
+        },
+
+        -- HTML language server (useful for JSX)
+        html = {
+          filetypes = { "html", "templ" },
+        },
+
+        -- CSS language server
+        cssls = {},
       }
 
       -- Setup each LSP server
       for server_name, server_config in pairs(servers) do
-        require("lspconfig")[server_name].setup(vim.tbl_deep_extend("force", {
-          capabilities = capabilities,
-        }, server_config or {}))
+        -- Special handling for jsonls to integrate with schemastore
+        if server_name == "jsonls" then
+          local jsonls_config = vim.tbl_deep_extend("force", {
+            capabilities = capabilities,
+          }, server_config or {})
+
+          -- Try to load schemastore schemas if available
+          local ok, schemastore = pcall(require, "schemastore")
+          if ok then
+            jsonls_config.settings = jsonls_config.settings or {}
+            jsonls_config.settings.json = jsonls_config.settings.json or {}
+            jsonls_config.settings.json.schemas = schemastore.json.schemas()
+          end
+
+          vim.lsp.config(server_name, jsonls_config)
+        else
+          vim.lsp.config(
+            server_name,
+            vim.tbl_deep_extend("force", {
+              capabilities = capabilities,
+            }, server_config or {})
+          )
+        end
       end
 
       -- Rest of your LSP configuration remains the same
@@ -284,6 +363,18 @@ return {
         nix = { "nixfmt" },
         python = { "ruff_format" },
         rust = { "rustfmt" },
+        -- JavaScript/TypeScript/React formatting
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescriptreact = { "prettier" },
+        json = { "prettier" },
+        html = { "prettier" },
+        css = { "prettier" },
+        scss = { "prettier" },
+        markdown = { "prettier" },
+        -- Docker
+        dockerfile = { "prettier" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
