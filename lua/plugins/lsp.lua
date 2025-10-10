@@ -30,151 +30,116 @@ return {
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-      -- Configure your servers here. They will use the default config unless you override it.
-      -- Each server config can have the following keys:
-      -- - cmd (table): Override the default command used to start the server
-      -- - filetypes (table): Override the default list of associated filetypes
-      -- - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      -- - settings (table): Override the default settings passed when initializing the server.
-      local servers = {
-        -- Example server configurations:
-        basedpyright = {
-          settings = {
-            python = {
-              analysis = {
-                autoSearchPaths = true,
-                diagnosticMode = "openFilesOnly",
-                useLibraryCodeForTypes = false,
-                typeCheckingMode = "none",
-              },
+      -- Enable LSP servers using the new Neovim 0.11 API
+      -- Server configurations are now stored in separate files in the lsp/ directory
+      vim.lsp.enable({
+        "rust_analyzer",
+        "lua_ls",
+        "basedpyright",
+        "ruff",
+        "nil_ls",
+        "ts_ls",
+        "eslint",
+        "dockerls",
+        "docker_compose_language_service",
+        "jsonls",
+        "html",
+        "cssls",
+      })
+
+      -- Configure additional server settings using the traditional lspconfig approach
+      -- This ensures compatibility and proper loading of configurations
+
+      -- Configure lua_ls with custom settings
+      vim.lsp.config.lua_ls = {
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            completion = {
+              callSnippet = "Replace",
             },
+            -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+            -- diagnostics = { disable = { 'missing-fields' } },
           },
         },
-        ruff = {
-          -- Ruff will use your project's configuration (pyproject.toml, ruff.toml, etc.)
-          -- by default, so often no additional settings are needed
-        },
-        lua_ls = {
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = "Replace",
-              },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
-            },
-          },
-        },
-        -- Add the Nix LSP configuration
-        nil_ls = {},
-
-        -- Add Rust analyzer configuration
-        rust_analyzer = {
-          settings = {
-            ["rust-analyzer"] = {
-              checkOnSave = {
-                command = "clippy",
-                extraArgs = { "--all-features", "--no-deps" },
-              },
-              procMacro = {
-                enable = true,
-              },
-              inlayHints = {
-                bindingModeHints = { enable = true },
-                closureReturnTypeHints = { enable = "always" },
-                expressionAdjustmentHints = { enable = "always" },
-                lifetimeElisionHints = { enable = "always", useParameterNames = true },
-              },
-            },
-          },
-        },
-
-        -- TypeScript/JavaScript support
-        ts_ls = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-          },
-        },
-
-        -- ESLint for JavaScript/TypeScript linting
-        eslint = {
-          settings = {
-            workingDirectories = { mode = "auto" },
-          },
-        },
-
-        -- Docker language server
-        dockerls = {},
-
-        -- Docker Compose language server
-        docker_compose_language_service = {},
-
-        -- JSON language server (useful for package.json, tsconfig.json, etc.)
-        jsonls = {
-          settings = {
-            json = {
-              validate = { enable = true },
-              format = { enable = true },
-            },
-          },
-        },
-
-        -- HTML language server (useful for JSX)
-        html = {
-          filetypes = { "html", "templ" },
-        },
-
-        -- CSS language server
-        cssls = {},
       }
 
-      -- Setup each LSP server
-      for server_name, server_config in pairs(servers) do
-        -- Special handling for jsonls to integrate with schemastore
-        if server_name == "jsonls" then
-          local jsonls_config = vim.tbl_deep_extend("force", {
-            capabilities = capabilities,
-          }, server_config or {})
+      -- Configure basedpyright with custom settings
+      vim.lsp.config.basedpyright = {
+        capabilities = capabilities,
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              diagnosticMode = "openFilesOnly",
+              useLibraryCodeForTypes = false,
+              typeCheckingMode = "none",
+            },
+          },
+        },
+      }
 
-          -- Try to load schemastore schemas if available
-          local ok, schemastore = pcall(require, "schemastore")
-          if ok then
-            jsonls_config.settings = jsonls_config.settings or {}
-            jsonls_config.settings.json = jsonls_config.settings.json or {}
-            jsonls_config.settings.json.schemas = schemastore.json.schemas()
-          end
+      -- Configure ts_ls with custom settings
+      vim.lsp.config.ts_ls = {
+        capabilities = capabilities,
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
+      }
 
-          vim.lsp.config(server_name, jsonls_config)
-        else
-          vim.lsp.config(
-            server_name,
-            vim.tbl_deep_extend("force", {
-              capabilities = capabilities,
-            }, server_config or {})
-          )
-        end
+      -- Configure eslint with custom settings
+      vim.lsp.config.eslint = {
+        capabilities = capabilities,
+        settings = {
+          workingDirectories = { mode = "auto" },
+        },
+      }
+
+      -- Configure jsonls with schemastore integration
+      local jsonls_setup = {
+        capabilities = capabilities,
+        settings = {
+          json = {
+            validate = { enable = true },
+            format = { enable = true },
+          },
+        },
+      }
+
+      -- Try to load schemastore schemas if available
+      local ok, schemastore = pcall(require, "schemastore")
+      if ok then
+        jsonls_setup.settings.json.schemas = schemastore.json.schemas()
       end
+
+      vim.lsp.config.jsonls = jsonls_setup
+
+      -- Configure html with custom filetypes
+      vim.lsp.config.html = {
+        capabilities = capabilities,
+        filetypes = { "html", "templ" },
+      }
 
       -- Rest of your LSP configuration remains the same
       -- This includes keymaps, autocommands, and diagnostic settings
