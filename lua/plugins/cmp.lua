@@ -9,10 +9,6 @@ return {
       popup = {
         border = "rounded",
       },
-      null_ls = {
-        enabled = true,
-        name = "crates",
-      },
     },
   },
   {
@@ -84,7 +80,7 @@ return {
 
           -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
-          
+
           -- Insert new line without accepting completion
           ["<C-CR>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
