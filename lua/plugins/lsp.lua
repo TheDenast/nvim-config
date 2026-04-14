@@ -45,6 +45,7 @@ return {
         "jsonls",
         "html",
         "cssls",
+        "gopls",
       })
 
       -- Configure additional server settings using the traditional lspconfig approach
@@ -340,6 +341,7 @@ return {
         markdown = { "prettier" },
         -- Docker
         dockerfile = { "prettier" },
+        go = { "goimports", "gofumpt" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
