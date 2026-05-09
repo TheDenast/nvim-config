@@ -56,6 +56,12 @@ return {
       local luasnip = require("luasnip")
       luasnip.config.setup({})
 
+      -- Auto-insert `()` after confirming a function/method completion
+      local ok_ap, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
+      if ok_ap then
+        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      end
+
       cmp.setup({
         snippet = {
           expand = function(args)

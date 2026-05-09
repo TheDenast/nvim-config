@@ -3,6 +3,21 @@ return {
   -- Detect tabstop and shiftwidth automatically
   "tpope/vim-sleuth",
 
+  -- Auto-close brackets, quotes, etc.
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    dependencies = { "hrsh7th/nvim-cmp" },
+    opts = {
+      check_ts = true,
+      ts_config = {
+        lua = { "string" },
+        javascript = { "template_string" },
+      },
+      fast_wrap = {},
+    },
+  },
+
   -- Git integration
   {
     "lewis6991/gitsigns.nvim",
